@@ -1,0 +1,24 @@
+{
+  "sessionState": {
+    "dialogAction": {
+      "type": "Close"
+    },
+    "intent": {
+      "name": "ComplexInquiry",
+      "state": "Fulfilled"
+    },
+    "sessionAttributes": {
+      "routedToExpert": "true",
+      "needsExpert": "true",
+      "userId": "user123",
+      "conversationId": "conv-456",
+      "expertRequestTime": "1699876543"
+    }
+  },
+  "messages": [
+    {
+      "contentType": "PlainText",
+      "content": "I understand you need specialized assistance. Let me connect you with an expert who can help you better."
+    }
+  ]
+}

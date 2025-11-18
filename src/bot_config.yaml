@@ -1,0 +1,258 @@
+bot:
+  name: "lex_v2_universal_bot"
+  description: "Universal Lex V2 chatbot for amazon connect"
+
+  region: "us-east-1"
+
+  roleArn: None # Access IAM Role: if none, will create new
+
+  dataPrivacy:
+    childDirected: False #By default set as False
+
+  idleSessionTTLInSeconds: 300
+
+  # -------------------------------
+  # BOT LOCALES
+  # -------------------------------
+  locale:
+    - localeId: "en_US"
+      nluIntentConfidenceThreshold: 0.40
+
+      voiceSettings:
+        voiceId: "Joanna"
+        engine: "neural" # neural or standard : if None, will use neural
+
+      # -------------------------------
+      # INTENTS
+      # -------------------------------
+      intents:
+        # -------------------------------
+        # INTENT: lex custom phrase intent
+        # -------------------------------
+        - name: "LEX_CUSTOM_PHRASE_EN_US"
+          description: "A intent with custom phrases to fulfill all type of custom requests in english"
+
+          sampleUtterances:
+            - "I need help with {CUSTOM_PHRASE}."
+            - "Can you help me with {CUSTOM_PHRASE}?"
+            - "I'm having trouble with {CUSTOM_PHRASE}, help."
+            - "Please assist me on {CUSTOM_PHRASE}."
+            - "I require assistance for {CUSTOM_PHRASE}."
+            - "Help me out with {CUSTOM_PHRASE}, please."
+            - "What's the way to handle {CUSTOM_PHRASE}?"
+            - "I need some help regarding {CUSTOM_PHRASE}."
+            - "Assist with my {CUSTOM_PHRASE} issue."
+            - "Tell me how to fix {CUSTOM_PHRASE}."
+            - "Support needed for {CUSTOM_PHRASE}."
+            - "I'm stuck on {CUSTOM_PHRASE}, can you help?"
+            - "Guide me through {CUSTOM_PHRASE}."
+            - "I want help on {CUSTOM_PHRASE} now."
+            - "Problem with {CUSTOM_PHRASE}, need aid."
+
+        # -------------------------------
+        # INTENT: lex repeat phrase intent
+        # -------------------------------
+        - name: "LEX_REPEATED_PHRASE_EN_US"
+          description: "A intent with repeat phrases to fulfill all type of repeat requests in english"
+
+          sampleUtterances:
+            - "Repeat yourself."
+            - "What did you say?"
+            - "Can you say it once more?"
+            - "Go over that again."
+            - "Repeat the previous."
+            - "Say it over again."
+            - "I didn't hear, repeat."
+            - "Repeat your last response."
+            - "Again, what was that?"
+            - "Come again?"
+            - "Redo that statement."
+            - "Repeat after me, no, you repeat."
+            - "Echo that back."
+            - "Run it by me again."
+            - "What was the last part?"
+
+      # -------------------------------
+      # SLOT DEFINITIONS (Combined slots + slotTypes)
+      # Each slot includes both the slot configuration and its type definition
+      # -------------------------------
+      slotDefinitions:
+        # Custom Slots
+        - name: "LEX_PRODUCT_TYPE_EN_US"
+          description: "Sample lex to capture product name"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            resolutionStrategy: "TopResolution"
+            values:
+              - value: "Laptop"
+                synonyms: ["notebook", "computer", "macbook", "ultrabook"]
+              - value: "Smartphone"
+                synonyms: ["mobile", "cell phone", "android phone", "iphone"]
+              - value: "Tablet"
+                synonyms: ["ipad", "android tablet", "tab"]
+              - value: "Headphones"
+                synonyms: ["earphones", "earbuds", "headset", "audio device"]
+              - value: "Smartwatch"
+                synonyms: ["fitness watch", "wearable", "digital watch"]
+              - value: "Camera"
+                synonyms: ["dslr", "mirrorless", "digital camera"]
+
+        - name: "LEX_YES_NO_EN_US"
+          description: "Yes or No responses"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            resolutionStrategy: "TopResolution"
+            values:
+              - value: "Yes"
+                synonyms:
+                  [
+                    "ya",
+                    "yeah",
+                    "yep",
+                    "sure",
+                    "affirmative",
+                    "ok",
+                    "okay",
+                    "of course",
+                    "yup",
+                    "indeed",
+                    "certainly",
+                  ]
+              - value: "No"
+                synonyms:
+                  [
+                    "nope",
+                    "nah",
+                    "negative",
+                    "never",
+                    "not at all",
+                    "nuh-uh",
+                    "no way",
+                    "nay",
+                    "not",
+                    "not today",
+                  ]
+
+        - name: "LEX_CHANNEL_EN_US"
+          description: "Communication channel type"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            resolutionStrategy: "TopResolution"
+            values:
+              - value: "SMS"
+                synonyms: ["text", "message", "short message service"]
+              - value: "Call"
+                synonyms: ["phone", "voice call", "telephone"]
+              - value: "Email"
+                synonyms: ["mail", "e-mail"]
+              - value: "Chat"
+                synonyms: ["messenger", "live chat", "online chat"]
+
+        - name: "LEX_DTMF_EN_US"
+          description: "DTMF key pressed by the user"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            resolutionStrategy: "TopResolution"
+            values:
+              - value: "0"
+                synonyms: ["zero", "none"]
+              - value: "1"
+                synonyms: ["one", "first"]
+              - value: "2"
+                synonyms: ["two", "second"]
+              - value: "3"
+                synonyms: ["three", "third"]
+              - value: "4"
+                synonyms: ["four", "fourth"]
+              - value: "5"
+                synonyms: ["five", "fifth"]
+              - value: "6"
+                synonyms: ["six", "sixth"]
+              - value: "7"
+                synonyms: ["seven", "seventh"]
+              - value: "8"
+                synonyms: ["eight", "eighth"]
+              - value: "9"
+                synonyms: ["nine", "ninth"]
+
+        - name: "LEX_CALLER_NAME_EN_US"
+          description: "Caller full name"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            resolutionStrategy: "OriginalValue"
+            values: [] # No predefined values, keep original input
+
+        # Built-in Amazon Slots
+        - name: "LEX_FIRST_NAME_EN_US_Built-in"
+          description: "User's first name"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.FirstName"
+
+        - name: "LEX_LAST_NAME_EN_US_Built-in"
+          description: "User's last name"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.LastName"
+
+        - name: "LEX_PHONE_NUMBER_EN_US_Built-in"
+          description: "User's phone number"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.PhoneNumber"
+
+        - name: "LEX_EMAIL_ADDRESS_EN_US_Built-in"
+          description: "User's email address"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.EmailAddress"
+
+        - name: "LEX_NUMBER_EN_US_Built-in"
+          description: "Numeric value"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.Number"
+
+        - name: "LEX_CITY_EN_US_Built-in"
+          description: "City name"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.City"
+
+        - name: "LEX_SPELLED_WORDS_EN_US_EXTENDED"
+          description: "Alphanumeric input"
+          valueElicitationSetting:
+            slotConstraint: "Optional"
+          slotType:
+            builtIn: "AMAZON.AlphaNumeric"
+
+      fulfillmentCodeHook:
+        enabled: true
+
+# -------------------------------
+# ACCESS / LAMBDA CONFIGURATION
+# -------------------------------
+lambdaHooks:
+  codeHookUri: "arn:aws:lambda:<REGION>:<ACCOUNT_ID>:function:lex_lambda_hanlder"
+  timeoutInSeconds: 8
+  invocationLabel: "$LETEST"
+
+# -------------------------------
+# VERSION & ALIAS
+# -------------------------------
+publish:
+  createVersion: true
+  alias:
+    name: "prod"
+    description: "Production alias"
