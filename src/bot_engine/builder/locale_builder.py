@@ -1,19 +1,11 @@
-from common.lex_v2_client import lex_v2_client
+from bot_engine.builder.bot_base import BotBase
 from typing import Literal
 
 
-class BotLocaleDefinitions:
-    def __init__(
-        self,
-        bot_id: str,
-        bot_version: str,
-        region_name: str,
-        locale_id: Literal["en_IN", "en_US"] = "en_US",
-    ):
+class CreateBuildBotLocale(BotBase):
+    def __init__(self, bot_id, locale_id):
         self.bot_id = bot_id
-        self.bot_version = bot_version
         self.locale_id = locale_id
-        self.lex_client = lex_v2_client(region_name)
 
     def create_bot_locale(
         self,
@@ -34,15 +26,16 @@ class BotLocaleDefinitions:
 
         """
         try:
-            response = self.lex_client.create_bot_locale(
+            response = self.LEX_CLIENT.create_bot_locale(
                 description=f"bot_id: {self.bot_id}, locale_id: {self.locale_id}",
+                botVersion="DRAFT",
                 nluIntentConfidenceThreshold=nlu_intent_confidence_threshold,
                 voiceSettings={
                     "voiceId": voice_id,
                     "engine": engine,
                 },
             )
-            return response
+            return response["botVersion"]
         except Exception as e:
             raise
 
@@ -60,8 +53,10 @@ class BotLocaleDefinitions:
 
         """
         try:
-            response = self.lex_client.build_bot_locale(
-                botId=self.bot_id, botVersion=self.bot_version, localeId=self.locale_id
+            response = self.LEX_CLIENT.build_bot_locale(
+                botId=self.bot_id,
+                localeId=self.locale_id,
+                botVersion="DRAFT",
             )
             return response
         except Exception as e:

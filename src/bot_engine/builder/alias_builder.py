@@ -1,25 +1,29 @@
-from common.lex_v2_client import lex_v2_client
+from bot_engine.builder.bot_base import BotBase
 
 
-class CreateBotAlias:
-    def __init__(
-        self,
-        bot_id,
-        alias_name,
-        bot_version,
-        region_name,
-        Alias_Locale_Settings_list: list[dict],  # [{'Locale':..., 'Lambda_arn':...}]
-    ):
+class CreateBotAlias(BotBase):
+    def __init__(self, bot_id, alias_name, description):
         self.bot_id = bot_id
         self.alias_name = alias_name
-        self.bot_version = bot_version
-        self.lex_client = lex_v2_client(region_name)
-        self.Alias_Locale_Settings_list = Alias_Locale_Settings_list
+        self.description = description
 
     def create_bot_alias(self):
         try:
+            response = self.lex_client.create_bot_alias(
+                botAliasName=self.alias_name,
+                botId=self.bot_id,
+                description=self.description,
+            )
+            return response["botAliasId"]
+        except Exception as e:
+            raise
+
+    def update_bot_alias(
+        self, bot_alias_id, Alias_Locale_Settings_list: list[dict]
+    ):  # [{'Locale':..., 'Lambda_arn':...}]s)
+        try:
             Alias_Locale_Settings = {}
-            for Alias_Locale in self.Alias_Locale_Settings_list:
+            for Alias_Locale in Alias_Locale_Settings_list:
                 Alias_Locale_Settings.update(
                     {
                         Alias_Locale["Locale"]: {
@@ -34,11 +38,10 @@ class CreateBotAlias:
                     }
                 )
 
-            response = self.lex_client.create_bot_alias(
+            response = self.lex_client.update_bot_alias(
                 botAliasName=self.alias_name,
                 botId=self.bot_id,
-                description=f"bot_id: {self.bot_id}, alias_name: {self.alias_name}",
-                botVersion=self.bot_version,
+                botAliasId=bot_alias_id
                 botAliasLocaleSettings=Alias_Locale_Settings,
             )
             return response

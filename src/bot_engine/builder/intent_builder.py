@@ -1,13 +1,17 @@
-from common.lex_v2_client import lex_v2_client
+from bot_engine.builder.bot_base import BotBase
 
 
-class CreatBotIntent:
-    def __init__(self, bot_id, intent_name, locale_id, bot_version, region_name):
-        self.bot_id = bot_id
+class CreatBotIntent(BotBase):
+    def __init__(
+        self,
+        intent_name,
+        locale_id,
+        bot_hook: list = None,
+    ):
+
         self.intent_name = intent_name
         self.locale_id = locale_id
-        self.bot_version = bot_version
-        self.lex_client = lex_v2_client(region_name)
+        self.bot_hook = bot_hook
 
     def create_bot_intent(
         self,
@@ -30,15 +34,24 @@ class CreatBotIntent:
                 "intentName": self.intent_name,
                 "description": f"intent name: {self.intent_name} for bot_id: {self.bot_id} with locale_id: {self.locale_id}",
                 "sampleUtterances": [{"utterance": u} for u in utterances],
-                "fulfillmentCodeHook": {"enabled": True, "active": True},
             }
+
+            if "fulfillmentCodeHook" in self.bot_hook or self.bot_hook == None:
+                intent_definition["fulfillmentCodeHook"] = {
+                    "enabled": True,
+                    "active": True,
+                }
+
+            if "intentConfirmationSetting" in self.bot_hook:
+                intent_definition["intentConfirmationSetting"] = {"enabled": True}
+
             response = self.lex_client.create_intent(
-                botId=self.bot_id,
+                botId=BotBase.BOT_NAME,
                 botVersion=self.bot_version,
                 localeId=self.locale_id,
                 slots=slot_list,
                 **intent_definition,
             )
-            return response
+            return response["intentId"]
         except Exception as e:
             raise

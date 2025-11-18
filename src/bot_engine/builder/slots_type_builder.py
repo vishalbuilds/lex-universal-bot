@@ -2,7 +2,7 @@ from typing import Literal, Optional
 from common.lex_v2_client import lex_v2_client
 
 
-class CreateBotSlotDefinitions:
+class CreateBotSlotsType:
     def __init__(self, region_name):
         self.lex_client = lex_v2_client(region_name)
 

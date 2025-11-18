@@ -12,8 +12,23 @@ bot:
   idleSessionTTLInSeconds: 300
 
   # -------------------------------
-  # BOT LOCALES
+  # ACCESS / LAMBDA CONFIGURATION
   # -------------------------------
+  lambdaHooks:
+    codeHookUri: "arn:aws:lambda:<REGION>:<ACCOUNT_ID>:function:lex_lambda_hanlder"
+    timeoutInSeconds: 8
+    invocationLabel: "$LETEST"
+
+  # -------------------------------
+  # ALIAS
+  # -------------------------------
+  alias:
+    name: "prod"
+    description: "Production alias"
+
+  # -------------------------------
+  # BOT LOCALES
+  # -------------------------------0
   locale:
     - localeId: "en_US"
       nluIntentConfidenceThreshold: 0.40
@@ -30,6 +45,7 @@ bot:
         # INTENT: lex custom phrase intent
         # -------------------------------
         - name: "LEX_CUSTOM_PHRASE_EN_US"
+          fulfillmentCodeHook: True #enable fulfilment promot and lambda hook
           description: "A intent with custom phrases to fulfill all type of custom requests in english"
 
           sampleUtterances:
@@ -53,6 +69,7 @@ bot:
         # INTENT: lex repeat phrase intent
         # -------------------------------
         - name: "LEX_REPEATED_PHRASE_EN_US"
+          intentConfirmationSetting: True #enable Confirmation promot
           description: "A intent with repeat phrases to fulfill all type of repeat requests in english"
 
           sampleUtterances:
@@ -236,23 +253,3 @@ bot:
             slotConstraint: "Optional"
           slotType:
             builtIn: "AMAZON.AlphaNumeric"
-
-      fulfillmentCodeHook:
-        enabled: true
-
-# -------------------------------
-# ACCESS / LAMBDA CONFIGURATION
-# -------------------------------
-lambdaHooks:
-  codeHookUri: "arn:aws:lambda:<REGION>:<ACCOUNT_ID>:function:lex_lambda_hanlder"
-  timeoutInSeconds: 8
-  invocationLabel: "$LETEST"
-
-# -------------------------------
-# VERSION & ALIAS
-# -------------------------------
-publish:
-  createVersion: true
-  alias:
-    name: "prod"
-    description: "Production alias"
