@@ -1,7 +1,7 @@
 from common.lex_v2_client import lex_v2_client
 
 
-class AddIntent:
+class CreatBotIntent:
     def __init__(self, bot_id, intent_name, locale_id, bot_version, region_name):
         self.bot_id = bot_id
         self.intent_name = intent_name
@@ -9,7 +9,7 @@ class AddIntent:
         self.bot_version = bot_version
         self.lex_client = lex_v2_client(region_name)
 
-    def add_intent(
+    def create_bot_intent(
         self,
         utterances: list[str],
         slots: list[dict],  # [{'name':..., 'slotType':...}]

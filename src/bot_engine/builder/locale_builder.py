@@ -2,7 +2,7 @@ from common.lex_v2_client import lex_v2_client
 from typing import Literal
 
 
-class CreateLocale:
+class BotLocaleDefinitions:
     def __init__(
         self,
         bot_id: str,

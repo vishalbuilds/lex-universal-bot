@@ -10,7 +10,7 @@ All methods include logging and error handling for robust production use.
 
 import datetime
 from common.lex_v2_client import lex_v2_client
-from bot_infra.lex_service_role_creator import lex_service_role_arn
+from bot_engine.builder.service_role_builder import lex_service_role_arn
 import os
 from typing import Literal
 
@@ -18,13 +18,13 @@ from typing import Literal
 region_name = os.environ.get("REGION_NAME")
 
 
-class CreateInstance:
+class CreatebotInstance:
     def __init__(self, bot_name: str, description: str):
         self.bot_name = bot_name
         self.description = description
         self.lex_client = lex_v2_client(region_name)
 
-    def create_instance(
+    def create_bot_instance(
         self,
         role_arn: str = None,
         idle_session_ttl_in_seconds: int = 300,

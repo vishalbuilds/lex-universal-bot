@@ -1,13 +1,12 @@
 from typing import Literal, Optional
-from urllib import request
 from common.lex_v2_client import lex_v2_client
 
 
-class CreateSLotType:
+class CreateBotSlotDefinitions:
     def __init__(self, region_name):
         self.lex_client = lex_v2_client(region_name)
 
-    def create_slot_type(
+    def create_bot_slot_type(
         self,
         slot_type_name,
         description,
@@ -32,7 +31,7 @@ class CreateSLotType:
         except Exception as e:
             raise
 
-    def create_slot_type_extended(
+    def create_bot_slot_type_extended(
         self,
         slot_type_name,
         description,
