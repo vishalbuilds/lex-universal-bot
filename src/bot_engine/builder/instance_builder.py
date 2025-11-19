@@ -24,7 +24,7 @@ class CreatebotInstance(BotBase):
         Create aws lexV2 bot.
 
         Args:
-            role_arn: lexV2 role arn to exicute process. if none will create auto
+            role_arn: lexV2 role arn to execute process. if none will create auto
             idle_session_ttl_in_seconds: session timeout wait time
         Returns:
                 bot id

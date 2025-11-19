@@ -12,14 +12,6 @@ bot:
   idleSessionTTLInSeconds: 300
 
   # -------------------------------
-  # ACCESS / LAMBDA CONFIGURATION
-  # -------------------------------
-  lambdaHooks:
-    codeHookUri: "arn:aws:lambda:<REGION>:<ACCOUNT_ID>:function:lex_lambda_hanlder"
-    timeoutInSeconds: 8
-    invocationLabel: "$LETEST"
-
-  # -------------------------------
   # ALIAS
   # -------------------------------
   alias:
@@ -32,6 +24,13 @@ bot:
   locale:
     - localeId: "en_US"
       nluIntentConfidenceThreshold: 0.40
+
+      # -------------------------------
+      # ACCESS / LAMBDA CONFIGURATION
+      # -------------------------------
+      lambdaHooks:
+        arn: "arn:aws:lambda:us-east-1:842675979580:function:lambda-lex-test"
+        codeHookInterfaceVersion: "1.0" # Lex code hook interface version (always "1.0")
 
       voiceSettings:
         voiceId: "Joanna"
@@ -46,34 +45,34 @@ bot:
         # -------------------------------
         - name: "LEX_CUSTOM_PHRASE_EN_US"
           codeHook:
-            - fulfillmentCodeHook #enable fulfilment promot and lambda hook
-            - intentConfirmationSetting #enable Confirmation promot to fulfill intent or cancal
+            - fulfillmentCodeHook #enable fulfilment prompt and lambda hook
+            - intentConfirmationSetting #enable Confirmation prompt to fulfill intent or cancel
           description: "A intent with custom phrases to fulfill all type of custom requests in english"
 
           sampleUtterances:
             - "I need help with {CUSTOM_PHRASE}"
             - "Can you help me with {CUSTOM_PHRASE}"
-            - "I'm having trouble with {CUSTOM_PHRASE}, help"
+            - "I am having trouble with {CUSTOM_PHRASE}"
             - "Please assist me on {CUSTOM_PHRASE}"
             - "I require assistance for {CUSTOM_PHRASE}"
-            - "Help me out with {CUSTOM_PHRASE}, please"
-            - "What's the way to handle {CUSTOM_PHRASE}"
+            - "Help me out with {CUSTOM_PHRASE}"
+            - "What is the way to handle {CUSTOM_PHRASE}"
             - "I need some help regarding {CUSTOM_PHRASE}"
             - "Assist with my {CUSTOM_PHRASE} issue"
             - "Tell me how to fix {CUSTOM_PHRASE}"
             - "Support needed for {CUSTOM_PHRASE}"
-            - "I'm stuck on {CUSTOM_PHRASE}, can you help"
+            - "I am stuck on {CUSTOM_PHRASE} "
             - "Guide me through {CUSTOM_PHRASE}"
             - "I want help on {CUSTOM_PHRASE} now"
-            - "Problem with {CUSTOM_PHRASE}, need aid"
+            - "Problem with {CUSTOM_PHRASE}"
 
         # -------------------------------
         # INTENT: lex repeat phrase intent
         # -------------------------------
         - name: "LEX_REPEATED_PHRASE_EN_US"
           codeHook:
-            - fulfillmentCodeHook #enable fulfilment promot and lambda hook
-            - intentConfirmationSetting #enable Confirmation promot to fulfill intent or cancal
+            - fulfillmentCodeHook #enable fulfilment prompt and lambda hook
+            - intentConfirmationSetting #enable Confirmation prompt to fulfill intent or cancel
           description: "A intent with repeat phrases to fulfill all type of repeat requests in english"
 
           sampleUtterances:
@@ -83,12 +82,14 @@ bot:
             - "Go over that again"
             - "Repeat the previous"
             - "Say it over again"
-            - "I didn't hear, repeat"
+            - "I did not hear"
             - "Repeat your last response"
-            - "Again, what was that"
+            - "Again what was that"
             - "Come again"
             - "Redo that statement"
-            - "Repeat after me, no, you repeat"
+            - "Repeat after me"
+            - "you repeat"
+            - "repeat"
             - "Echo that back"
             - "Run it by me again"
             - "What was the last part"
@@ -101,9 +102,11 @@ bot:
         # Custom Slots
         - name: "LEX_PRODUCT_TYPE_EN_US"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: "PRODUCT_TYPE"
           type: "Custom"
           description: "Sample lex to capture product name"
           slotConstraint: "Optional"
+          priority: 60
           slotType:
             resolutionStrategy: "TopResolution"
             slotTypeValues:
@@ -122,9 +125,11 @@ bot:
 
         - name: "LEX_YES_NO_EN_US"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: YES_NO
           type: "Custom"
           description: "Yes or No responses"
           slotConstraint: "Optional"
+          priority: 90
           slotType:
             resolutionStrategy: "TopResolution"
             slotTypeValues:
@@ -160,9 +165,11 @@ bot:
 
         - name: "LEX_CHANNEL_EN_US"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: CHANNEL
           type: "Custom"
           description: "Communication channel type"
           slotConstraint: "Optional"
+          priority: 70
           slotType:
             resolutionStrategy: "TopResolution"
             slotTypeValues:
@@ -177,9 +184,11 @@ bot:
 
         - name: "LEX_DTMF_EN_US"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: DTMF
           type: "Custom"
           description: "DTMF key pressed by the user"
           slotConstraint: "Optional"
+          priority: 85
           slotType:
             resolutionStrategy: "TopResolution"
             slotTypeValues:
@@ -206,6 +215,7 @@ bot:
 
         # - name: "LEX_CALLER_NAME_EN_US"
         #   intent: "LEX_CUSTOM_PHRASE_EN_US"
+        #   slotPhraseName: CALLER_NAME
         #   type: "Custom"
         #   description: "Caller full name"
         #   slotConstraint: "Optional"
@@ -216,46 +226,60 @@ bot:
         # Built-in Amazon Slots
         - name: "LEX_FIRST_NAME_EN_US_Built-in"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: FIRST_NAME_BUILTIN
           type: "BuiltIn"
           slotConstraint: "Optional"
+          priority: 75
           slotTypeId: "AMAZON.FirstName"
 
         - name: "LEX_LAST_NAME_EN_US_Built-in"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: LAST_NAME_BUILTIN
           type: "BuiltIn"
           slotConstraint: "Optional"
+          priority: 75
           slotTypeId: "AMAZON.LastName"
 
         - name: "LEX_PHONE_NUMBER_EN_US_Built-in"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: PHONE_NUMBER_BUILTIN
           type: "BuiltIn"
           slotConstraint: "Optional"
+          priority: 80
           slotTypeId: "AMAZON.PhoneNumber"
 
         - name: "LEX_EMAIL_ADDRESS_EN_US_Built-in"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: EMAIL_ADDRESS_BUILTIN
           type: "BuiltIn"
           slotConstraint: "Optional"
+          priority: 80
           slotTypeId: "AMAZON.EmailAddress"
 
         - name: "LEX_NUMBER_EN_US_Built-in"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: NUMBER_BUILTIN
           type: "BuiltIn"
           slotConstraint: "Optional"
+          priority: 50
           slotTypeId: "AMAZON.Number"
 
         - name: "LEX_CITY_EN_US_Built-in"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: CITY_BUILTIN
           type: "BuiltIn"
           slotConstraint: "Optional"
+          priority: 65
           slotTypeId: "AMAZON.City"
 
         # Extended Amazon Slots
         - name: "LEX_SPELLED_WORDS_EN_US_EXTENDED"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: SPELLED_WORDS_EXTENDED
           type: "Extended"
           description: "Alphanumeric input"
           slotConstraint: "Optional"
+          priority: 55
           slotType:
             parentSlotTypeSignature: "AMAZON.AlphaNumeric"
             resolutionStrategy: "TopResolution"
@@ -263,9 +287,11 @@ bot:
 
         - name: "LEX_CUSTOM_PHRASE_EN_US"
           intent: "LEX_CUSTOM_PHRASE_EN_US"
+          slotPhraseName: CUSTOM_PHRASE
           type: "Custom"
           description: "Custom phrase that can be anything the user mentions"
           slotConstraint: "Optional"
+          priority: 10
           slotType:
             resolutionStrategy: "TopResolution"
             slotTypeValues:
@@ -314,7 +340,7 @@ bot:
                   ]
               - sampleValue: "upgrade"
                 synonyms:
-                  ["upgrading", "plan upgrade", "upgrade service", "premium"]
+                  ["upgrading", "plan change", "better service", "premium"]
               - sampleValue: "settings"
                 synonyms:
                   [
@@ -444,7 +470,7 @@ bot:
               - sampleValue: "uninstall"
                 synonyms: ["remove", "uninstalling", "delete app", "removal"]
               - sampleValue: "update"
-                synonyms: ["upgrade", "software update", "new version", "patch"]
+                synonyms: ["software update", "new version", "patch"]
               - sampleValue: "pricing"
                 synonyms: ["cost", "price", "how much", "pricing plans"]
               - sampleValue: "trial period"
@@ -458,8 +484,7 @@ bot:
                     "bulk purchase",
                   ]
               - sampleValue: "gift card"
-                synonyms:
-                  ["voucher", "gift certificate", "gift code", "prepaid card"]
+                synonyms: ["gift certificate", "gift code", "prepaid card"]
               - sampleValue: "loyalty program"
                 synonyms:
                   ["rewards", "points", "rewards program", "loyalty points"]

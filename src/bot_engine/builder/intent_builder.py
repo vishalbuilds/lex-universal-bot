@@ -71,6 +71,28 @@ class CreatBotIntent(BotBase):
                     "slotConstraint": slot_constraint,
                 },
             )
+            return response["slotId"]
+        except Exception as e:
+            raise
+
+    def update_intent(self, intent_id, slot_priorities_list: list[dict]):
+        try:
+            slot_priorities = [
+                {
+                    "slotId": slot_dict["slotId"],
+                    "priority": slot_dict["priority"],
+                }
+                for slot_dict in slot_priorities_list
+            ]
+
+            response = self.LEX_CLIENT.update_intent(
+                intentId=intent_id,
+                botId=self.bot_id,
+                botVersion=self.bot_version,
+                localeId=self.locale_id,
+                slotPriorities=slot_priorities,
+            )
+
             return response
         except Exception as e:
             raise

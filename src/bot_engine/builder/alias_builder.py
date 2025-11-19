@@ -19,8 +19,8 @@ class CreateBotAlias(BotBase):
             raise
 
     def update_bot_alias(
-        self, bot_alias_id, Alias_Locale_Settings_list: list[dict]
-    ):  # [{'Locale':..., 'Lambda_arn':...}]s)
+        self, bot_alias_id, bot_version, Alias_Locale_Settings_list: list[dict]
+    ):  # [{'Locale':..., 'Lambda_arn':..., 'codeHookInterfaceVersion':...}]
         try:
             Alias_Locale_Settings = {}
             for Alias_Locale in Alias_Locale_Settings_list:
@@ -31,7 +31,9 @@ class CreateBotAlias(BotBase):
                             "codeHookSpecification": {
                                 "lambdaCodeHook": {
                                     "lambdaARN": Alias_Locale["Lambda_arn"],
-                                    "codeHookInterfaceVersion": "1.0",
+                                    "codeHookInterfaceVersion": Alias_Locale[
+                                        "codeHookInterfaceVersion"
+                                    ],
                                 }
                             },
                         }
@@ -41,6 +43,7 @@ class CreateBotAlias(BotBase):
             response = self.LEX_CLIENT.update_bot_alias(
                 botAliasName=self.alias_name,
                 botId=self.bot_id,
+                botVersion=bot_version,
                 botAliasId=bot_alias_id,
                 botAliasLocaleSettings=Alias_Locale_Settings,
             )

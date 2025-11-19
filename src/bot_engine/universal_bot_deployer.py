@@ -5,6 +5,7 @@ from bot_engine.builder.intent_builder import CreatBotIntent
 from bot_engine.builder.slots_type_builder import CreateBotSlotsType
 from bot_engine.builder.alias_builder import CreateBotAlias
 from bot_engine.builder.bot_health_checker import BotHealthChecker
+from bot_engine.builder.version_builder import CreateBotVersion
 from bot_engine.builder.bot_base import BotBase
 import time
 
@@ -26,8 +27,8 @@ class CreateUniversalBot:
 
     def _check_bot_status(self):
         try:
-            bot_staus = BotHealthChecker().get_bot_status(self.bot_id)
-            if bot_staus == "Available":
+            bot_status = BotHealthChecker().get_bot_status(self.bot_id)
+            if bot_status == "Available":
                 return True
         except Exception as e:
             raise
@@ -119,10 +120,10 @@ class CreateUniversalBot:
                     )
                     intent_id_set[intent.name] = intent_id
                 # add slot in intent
+                slot_priorities_list = []
                 for slot in locale.slotDefinitions:
                     # Get the intent_id for this slot
                     target_intent_id = intent_id_set.get(slot.intent)
-                    print(target_intent_id)
 
                     if target_intent_id is None:
                         print(
@@ -134,22 +135,47 @@ class CreateUniversalBot:
                         print(
                             f"start slot cust and ext add in intent {slot.name} to intent {slot.intent}"
                         )
-                        CreatBotIntent_obj.Create_slot_in_intent(
-                            slot.name,
+                        slot_id = CreatBotIntent_obj.Create_slot_in_intent(
+                            slot.slotPhraseName,
                             slots_type_id_set.get(slot.name, "AMAZON.AlphaNumeric"),
                             target_intent_id,
                             slot.slotConstraint,
                         )
+                        slot_priorities_list.append(
+                            {"slotId": slot_id, "priority": slot.priority}
+                        )
+
                     elif slot.type == "BuiltIn":
                         print(
                             f"start slot builtin add in intent {slot.name} to intent {slot.intent}"
                         )
-                        CreatBotIntent_obj.Create_slot_in_intent(
-                            slot.name,
+                        slot_id = CreatBotIntent_obj.Create_slot_in_intent(
+                            slot.slotPhraseName,
                             slot.slotTypeId,
                             target_intent_id,
                             slot.slotConstraint,
                         )
+                        slot_priorities_list.append(
+                            {"slotId": slot_id, "priority": slot.priority}
+                        )
+
+                    CreatBotIntent_obj.update_intent()
+
+        except Exception as e:
+            raise
+
+    def _init_version(self):
+        try:
+
+            bot_version_locale_specification_list = [
+                {locale.localeId: "DRAFT"} for locale in bot_config.locale
+            ]
+            CreateBotVersion_obj = CreateBotVersion(self.bot_id)
+            bot_version = CreateBotVersion_obj.create_bot_version(
+                "first bot version 1 based on DRAFT",
+                bot_version_locale_specification_list,
+            )
+            return bot_version
 
         except Exception as e:
             raise
@@ -158,9 +184,20 @@ class CreateUniversalBot:
         try:
             # create alias
             CreateBotAlias_obj = CreateBotAlias(
-                self.bot_id, bot_config.name, bot_config.description
+                self.bot_id, bot_config.alias.name, bot_config.alias.description
             )
             bot_alias_id = CreateBotAlias_obj.create_bot_alias()
+            Alias_Locale_Settings_list = [
+                {
+                    "Locale": locale.localeId,
+                    "Lambda_arn": locale.lambdaHooks.arn,
+                    "codeHookInterfaceVersion": locale.lambdaHooks.codeHookInterfaceVersion,
+                }
+                for locale in bot_config.locale
+            ]
+            CreateBotAlias_obj.update_bot_alias(
+                bot_alias_id, self.bot_version, Alias_Locale_Settings_list
+            )
 
         except Exception as e:
             raise
@@ -180,6 +217,10 @@ class CreateUniversalBot:
                 break
             time.sleep(5)
         self._init_language_intent_slots()
+
+        self.bot_version = self._init_version()
+
+        self._init_alias()
 
 
 if __name__ == "__main__":
