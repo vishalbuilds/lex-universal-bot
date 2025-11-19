@@ -1,32 +1,45 @@
 from typing import Literal, Optional
-from common.lex_v2_client import lex_v2_client
+from bot_engine.builder.bot_base import BotBase
 
 
-class CreateBotSlotsType:
-    def __init__(self, region_name):
-        self.lex_client = lex_v2_client(region_name)
+class CreateBotSlotsType(BotBase):
+    def __init__(self, bot_id, locale_id, bot_version):
+        self.bot_id = bot_id
+        self.locale_id = locale_id
+        self.bot_version = bot_version
 
-    def create_bot_slot_type(
+    def create_bot_slot_type_custom(
         self,
         slot_type_name,
         description,
-        bot_id,
-        bot_version,
-        locale_id,
+        slot_type_values_list_row: list[
+            dict
+        ],  # [{sampleValue1:[synonyms1,synonyms2....]},{sampleValue2:[synonyms11,synonyms21....]}]
         resolutionStrategy: Literal[
             "OriginalValue", "TopResolution", "Concatenation"
         ] = "OriginalValue",
     ):
         try:
-            response = self.lex_client.create_slot_type(
-                slotTypeName=f"LEX_{slot_type_name}",
-                botId=bot_id,
-                botVersion=bot_version,
-                localeId=locale_id,
+            slot_type_values_list = []
+            for slot_type in slot_type_values_list_row:
+                for sample_value, synonyms in slot_type.items():
+                    slot_type_values_list.append(
+                        {
+                            "sampleValue": {"value": sample_value},
+                            "synonyms": [{"value": synonym} for synonym in synonyms],
+                        }
+                    )
+
+            response = self.LEX_CLIENT.create_slot_type(
+                slotTypeName=slot_type_name,
+                slotTypeValues=slot_type_values_list,
+                botId=self.bot_id,
+                botVersion=self.bot_version,
+                localeId=self.locale_id,
                 description=description,
                 valueSelectionSetting={"resolutionStrategy": resolutionStrategy},
             )
-            return response
+            return response["slotTypeId"]
 
         except Exception as e:
             raise
@@ -35,9 +48,6 @@ class CreateBotSlotsType:
         self,
         slot_type_name,
         description,
-        bot_id,
-        bot_version,
-        locale_id,
         parent_slot_type_signature: str = "AMAZON.AlphaNumeric",
         regex_pattern: Optional[str] = None,
         resolutionStrategy: Literal[
@@ -46,10 +56,10 @@ class CreateBotSlotsType:
     ):
         try:
             request = {
-                "slotTypeName": f"LEX_{slot_type_name}",
-                "botId": bot_id,
-                "botVersion": bot_version,
-                "localeId": locale_id,
+                "slotTypeName": slot_type_name,
+                "botId": self.bot_id,
+                "botVersion": self.bot_version,
+                "localeId": self.locale_id,
                 "description": description,
             }
 
@@ -62,8 +72,8 @@ class CreateBotSlotsType:
 
             request["valueSelectionSetting"] = value_selection
 
-            response = self.lex_client.create_slot_type(**request)
-            return response
+            response = self.LEX_CLIENT.create_slot_type(**request)
+            return response["slotTypeId"]
 
         except Exception as e:
             raise

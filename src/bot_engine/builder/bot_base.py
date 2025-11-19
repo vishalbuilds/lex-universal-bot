@@ -11,7 +11,7 @@ class BotBase:
     BOT_TAGS = {}
 
     @classmethod
-    def set_base(cls, bot_name, description, bot_version, region_name):
+    def set_base(cls, bot_name, description, region_name):
 
         cls.BOT_NAME = bot_name
         cls.DESCRIPTION = description

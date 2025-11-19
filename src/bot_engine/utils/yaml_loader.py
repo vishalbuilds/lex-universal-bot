@@ -2,7 +2,8 @@ import yaml
 from pathlib import Path
 from types import SimpleNamespace
 
-bot_template_path = Path("bot_template.yaml")
+# Get the path relative to this file's location
+bot_template_path = Path(__file__).parent.parent.parent / "bot_template.yaml"
 
 
 def to_ns(d):
@@ -19,15 +20,4 @@ with bot_template_path.open("r") as f:
 bot_config = to_ns(data["bot"])
 
 
-# a = (
-#     bot_config.name,
-#     bot_config.description,
-#     "1.0.0",
-#     bot_config.region,
-#     bot_config.locale[0].localeId,
-# )
-
-# print(a)
-
-
-print(bot_config)
+# print(bot_config)

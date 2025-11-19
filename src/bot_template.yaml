@@ -4,7 +4,7 @@ bot:
 
   region: "us-east-1"
 
-  roleArn: None # Access IAM Role: if none, will create new
+  roleArn: "arn:aws:iam::842675979580:role/aws-service-role/lex.amazonaws.com/AWSServiceRoleForLexBots" # Access IAM Role: if none, will create new
 
   dataPrivacy:
     childDirected: False #By default set as False
@@ -28,7 +28,7 @@ bot:
 
   # -------------------------------
   # BOT LOCALES
-  # -------------------------------0
+  # -------------------------------
   locale:
     - localeId: "en_US"
       nluIntentConfidenceThreshold: 0.40
@@ -45,49 +45,53 @@ bot:
         # INTENT: lex custom phrase intent
         # -------------------------------
         - name: "LEX_CUSTOM_PHRASE_EN_US"
-          fulfillmentCodeHook: True #enable fulfilment promot and lambda hook
+          codeHook:
+            - fulfillmentCodeHook #enable fulfilment promot and lambda hook
+            - intentConfirmationSetting #enable Confirmation promot to fulfill intent or cancal
           description: "A intent with custom phrases to fulfill all type of custom requests in english"
 
           sampleUtterances:
-            - "I need help with {CUSTOM_PHRASE}."
-            - "Can you help me with {CUSTOM_PHRASE}?"
-            - "I'm having trouble with {CUSTOM_PHRASE}, help."
-            - "Please assist me on {CUSTOM_PHRASE}."
-            - "I require assistance for {CUSTOM_PHRASE}."
-            - "Help me out with {CUSTOM_PHRASE}, please."
-            - "What's the way to handle {CUSTOM_PHRASE}?"
-            - "I need some help regarding {CUSTOM_PHRASE}."
-            - "Assist with my {CUSTOM_PHRASE} issue."
-            - "Tell me how to fix {CUSTOM_PHRASE}."
-            - "Support needed for {CUSTOM_PHRASE}."
-            - "I'm stuck on {CUSTOM_PHRASE}, can you help?"
-            - "Guide me through {CUSTOM_PHRASE}."
-            - "I want help on {CUSTOM_PHRASE} now."
-            - "Problem with {CUSTOM_PHRASE}, need aid."
+            - "I need help with {CUSTOM_PHRASE}"
+            - "Can you help me with {CUSTOM_PHRASE}"
+            - "I'm having trouble with {CUSTOM_PHRASE}, help"
+            - "Please assist me on {CUSTOM_PHRASE}"
+            - "I require assistance for {CUSTOM_PHRASE}"
+            - "Help me out with {CUSTOM_PHRASE}, please"
+            - "What's the way to handle {CUSTOM_PHRASE}"
+            - "I need some help regarding {CUSTOM_PHRASE}"
+            - "Assist with my {CUSTOM_PHRASE} issue"
+            - "Tell me how to fix {CUSTOM_PHRASE}"
+            - "Support needed for {CUSTOM_PHRASE}"
+            - "I'm stuck on {CUSTOM_PHRASE}, can you help"
+            - "Guide me through {CUSTOM_PHRASE}"
+            - "I want help on {CUSTOM_PHRASE} now"
+            - "Problem with {CUSTOM_PHRASE}, need aid"
 
         # -------------------------------
         # INTENT: lex repeat phrase intent
         # -------------------------------
         - name: "LEX_REPEATED_PHRASE_EN_US"
-          intentConfirmationSetting: True #enable Confirmation promot
+          codeHook:
+            - fulfillmentCodeHook #enable fulfilment promot and lambda hook
+            - intentConfirmationSetting #enable Confirmation promot to fulfill intent or cancal
           description: "A intent with repeat phrases to fulfill all type of repeat requests in english"
 
           sampleUtterances:
-            - "Repeat yourself."
-            - "What did you say?"
-            - "Can you say it once more?"
-            - "Go over that again."
-            - "Repeat the previous."
-            - "Say it over again."
-            - "I didn't hear, repeat."
-            - "Repeat your last response."
-            - "Again, what was that?"
-            - "Come again?"
-            - "Redo that statement."
-            - "Repeat after me, no, you repeat."
-            - "Echo that back."
-            - "Run it by me again."
-            - "What was the last part?"
+            - "Repeat yourself"
+            - "What did you say"
+            - "Can you say it once more"
+            - "Go over that again"
+            - "Repeat the previous"
+            - "Say it over again"
+            - "I didn't hear, repeat"
+            - "Repeat your last response"
+            - "Again, what was that"
+            - "Come again"
+            - "Redo that statement"
+            - "Repeat after me, no, you repeat"
+            - "Echo that back"
+            - "Run it by me again"
+            - "What was the last part"
 
       # -------------------------------
       # SLOT DEFINITIONS (Combined slots + slotTypes)
@@ -96,33 +100,35 @@ bot:
       slotDefinitions:
         # Custom Slots
         - name: "LEX_PRODUCT_TYPE_EN_US"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "Custom"
           description: "Sample lex to capture product name"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
+          slotConstraint: "Optional"
           slotType:
             resolutionStrategy: "TopResolution"
-            values:
-              - value: "Laptop"
+            slotTypeValues:
+              - sampleValue: "Laptop"
                 synonyms: ["notebook", "computer", "macbook", "ultrabook"]
-              - value: "Smartphone"
+              - sampleValue: "Smartphone"
                 synonyms: ["mobile", "cell phone", "android phone", "iphone"]
-              - value: "Tablet"
+              - sampleValue: "Tablet"
                 synonyms: ["ipad", "android tablet", "tab"]
-              - value: "Headphones"
+              - sampleValue: "Headphones"
                 synonyms: ["earphones", "earbuds", "headset", "audio device"]
-              - value: "Smartwatch"
+              - sampleValue: "Smartwatch"
                 synonyms: ["fitness watch", "wearable", "digital watch"]
-              - value: "Camera"
+              - sampleValue: "Camera"
                 synonyms: ["dslr", "mirrorless", "digital camera"]
 
         - name: "LEX_YES_NO_EN_US"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "Custom"
           description: "Yes or No responses"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
+          slotConstraint: "Optional"
           slotType:
             resolutionStrategy: "TopResolution"
-            values:
-              - value: "Yes"
+            slotTypeValues:
+              - sampleValue: "Yes"
                 synonyms:
                   [
                     "ya",
@@ -137,7 +143,7 @@ bot:
                     "indeed",
                     "certainly",
                   ]
-              - value: "No"
+              - sampleValue: "No"
                 synonyms:
                   [
                     "nope",
@@ -153,103 +159,315 @@ bot:
                   ]
 
         - name: "LEX_CHANNEL_EN_US"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "Custom"
           description: "Communication channel type"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
+          slotConstraint: "Optional"
           slotType:
             resolutionStrategy: "TopResolution"
-            values:
-              - value: "SMS"
+            slotTypeValues:
+              - sampleValue: "SMS"
                 synonyms: ["text", "message", "short message service"]
-              - value: "Call"
+              - sampleValue: "Call"
                 synonyms: ["phone", "voice call", "telephone"]
-              - value: "Email"
+              - sampleValue: "Email"
                 synonyms: ["mail", "e-mail"]
-              - value: "Chat"
+              - sampleValue: "Chat"
                 synonyms: ["messenger", "live chat", "online chat"]
 
         - name: "LEX_DTMF_EN_US"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "Custom"
           description: "DTMF key pressed by the user"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
+          slotConstraint: "Optional"
           slotType:
             resolutionStrategy: "TopResolution"
-            values:
-              - value: "0"
+            slotTypeValues:
+              - sampleValue: "0"
                 synonyms: ["zero", "none"]
-              - value: "1"
+              - sampleValue: "1"
                 synonyms: ["one", "first"]
-              - value: "2"
+              - sampleValue: "2"
                 synonyms: ["two", "second"]
-              - value: "3"
+              - sampleValue: "3"
                 synonyms: ["three", "third"]
-              - value: "4"
+              - sampleValue: "4"
                 synonyms: ["four", "fourth"]
-              - value: "5"
+              - sampleValue: "5"
                 synonyms: ["five", "fifth"]
-              - value: "6"
+              - sampleValue: "6"
                 synonyms: ["six", "sixth"]
-              - value: "7"
+              - sampleValue: "7"
                 synonyms: ["seven", "seventh"]
-              - value: "8"
+              - sampleValue: "8"
                 synonyms: ["eight", "eighth"]
-              - value: "9"
+              - sampleValue: "9"
                 synonyms: ["nine", "ninth"]
 
-        - name: "LEX_CALLER_NAME_EN_US"
-          description: "Caller full name"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            resolutionStrategy: "OriginalValue"
-            values: [] # No predefined values, keep original input
+        # - name: "LEX_CALLER_NAME_EN_US"
+        #   intent: "LEX_CUSTOM_PHRASE_EN_US"
+        #   type: "Custom"
+        #   description: "Caller full name"
+        #   slotConstraint: "Optional"
+        #   slotType:
+        #     resolutionStrategy: "OriginalValue"
+        #     slotTypeValues: [] # No predefined values, keep original input
 
         # Built-in Amazon Slots
         - name: "LEX_FIRST_NAME_EN_US_Built-in"
-          description: "User's first name"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            builtIn: "AMAZON.FirstName"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "BuiltIn"
+          slotConstraint: "Optional"
+          slotTypeId: "AMAZON.FirstName"
 
         - name: "LEX_LAST_NAME_EN_US_Built-in"
-          description: "User's last name"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            builtIn: "AMAZON.LastName"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "BuiltIn"
+          slotConstraint: "Optional"
+          slotTypeId: "AMAZON.LastName"
 
         - name: "LEX_PHONE_NUMBER_EN_US_Built-in"
-          description: "User's phone number"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            builtIn: "AMAZON.PhoneNumber"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "BuiltIn"
+          slotConstraint: "Optional"
+          slotTypeId: "AMAZON.PhoneNumber"
 
         - name: "LEX_EMAIL_ADDRESS_EN_US_Built-in"
-          description: "User's email address"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            builtIn: "AMAZON.EmailAddress"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "BuiltIn"
+          slotConstraint: "Optional"
+          slotTypeId: "AMAZON.EmailAddress"
 
         - name: "LEX_NUMBER_EN_US_Built-in"
-          description: "Numeric value"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            builtIn: "AMAZON.Number"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "BuiltIn"
+          slotConstraint: "Optional"
+          slotTypeId: "AMAZON.Number"
 
         - name: "LEX_CITY_EN_US_Built-in"
-          description: "City name"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
-          slotType:
-            builtIn: "AMAZON.City"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "BuiltIn"
+          slotConstraint: "Optional"
+          slotTypeId: "AMAZON.City"
 
+        # Extended Amazon Slots
         - name: "LEX_SPELLED_WORDS_EN_US_EXTENDED"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "Extended"
           description: "Alphanumeric input"
-          valueElicitationSetting:
-            slotConstraint: "Optional"
+          slotConstraint: "Optional"
           slotType:
-            builtIn: "AMAZON.AlphaNumeric"
+            parentSlotTypeSignature: "AMAZON.AlphaNumeric"
+            resolutionStrategy: "TopResolution"
+            regexPattern: "[A-Za-z]"
+
+        - name: "LEX_CUSTOM_PHRASE_EN_US"
+          intent: "LEX_CUSTOM_PHRASE_EN_US"
+          type: "Custom"
+          description: "Custom phrase that can be anything the user mentions"
+          slotConstraint: "Optional"
+          slotType:
+            resolutionStrategy: "TopResolution"
+            slotTypeValues:
+              - sampleValue: "my account"
+                synonyms: ["account", "profile", "user account", "my profile"]
+              - sampleValue: "billing"
+                synonyms: ["invoice", "payment", "charges", "bill"]
+              - sampleValue: "password reset"
+                synonyms:
+                  [
+                    "reset password",
+                    "forgot password",
+                    "password recovery",
+                    "change password",
+                  ]
+              - sampleValue: "technical issue"
+                synonyms:
+                  ["technical problem", "tech issue", "system error", "bug"]
+              - sampleValue: "order status"
+                synonyms:
+                  ["my order", "order tracking", "delivery status", "shipment"]
+              - sampleValue: "refund"
+                synonyms:
+                  ["return", "money back", "reimbursement", "refund request"]
+              - sampleValue: "subscription"
+                synonyms:
+                  [
+                    "membership",
+                    "plan",
+                    "subscription plan",
+                    "recurring payment",
+                  ]
+              - sampleValue: "product information"
+                synonyms:
+                  ["product details", "item info", "product specs", "features"]
+              - sampleValue: "cancellation"
+                synonyms:
+                  ["cancel", "canceling", "cancel order", "cancel service"]
+              - sampleValue: "login problem"
+                synonyms:
+                  [
+                    "can't login",
+                    "login error",
+                    "access issue",
+                    "sign in problem",
+                  ]
+              - sampleValue: "upgrade"
+                synonyms:
+                  ["upgrading", "plan upgrade", "upgrade service", "premium"]
+              - sampleValue: "settings"
+                synonyms:
+                  [
+                    "preferences",
+                    "configuration",
+                    "account settings",
+                    "options",
+                  ]
+              - sampleValue: "shipping"
+                synonyms: ["delivery", "shipping info", "dispatch", "freight"]
+              - sampleValue: "warranty"
+                synonyms:
+                  [
+                    "guarantee",
+                    "warranty claim",
+                    "product warranty",
+                    "coverage",
+                  ]
+              - sampleValue: "discount code"
+                synonyms:
+                  ["promo code", "coupon", "voucher", "promotional code"]
+              - sampleValue: "registration"
+                synonyms:
+                  ["sign up", "create account", "register", "enrollment"]
+              - sampleValue: "verification"
+                synonyms:
+                  [
+                    "verify",
+                    "confirmation",
+                    "authentication",
+                    "identity verification",
+                  ]
+              - sampleValue: "notification settings"
+                synonyms:
+                  [
+                    "alerts",
+                    "notifications",
+                    "email preferences",
+                    "push notifications",
+                  ]
+              - sampleValue: "data export"
+                synonyms:
+                  [
+                    "download data",
+                    "export information",
+                    "data download",
+                    "backup",
+                  ]
+              - sampleValue: "privacy settings"
+                synonyms:
+                  [
+                    "privacy",
+                    "data privacy",
+                    "privacy options",
+                    "security settings",
+                  ]
+              - sampleValue: "two factor authentication"
+                synonyms:
+                  [
+                    "2FA",
+                    "two step verification",
+                    "2 factor auth",
+                    "security code",
+                  ]
+              - sampleValue: "account deletion"
+                synonyms:
+                  [
+                    "delete account",
+                    "close account",
+                    "remove account",
+                    "deactivate",
+                  ]
+              - sampleValue: "payment method"
+                synonyms:
+                  [
+                    "credit card",
+                    "payment info",
+                    "billing method",
+                    "payment option",
+                  ]
+              - sampleValue: "API access"
+                synonyms:
+                  [
+                    "API key",
+                    "developer access",
+                    "API integration",
+                    "API credentials",
+                  ]
+              - sampleValue: "mobile app"
+                synonyms:
+                  ["app", "mobile application", "phone app", "smartphone app"]
+              - sampleValue: "website navigation"
+                synonyms:
+                  ["site navigation", "menu", "finding pages", "website layout"]
+              - sampleValue: "customer service"
+                synonyms:
+                  ["support", "help desk", "customer support", "service team"]
+              - sampleValue: "feature request"
+                synonyms:
+                  [
+                    "new feature",
+                    "suggestion",
+                    "enhancement",
+                    "feature suggestion",
+                  ]
+              - sampleValue: "bug report"
+                synonyms:
+                  [
+                    "report bug",
+                    "error report",
+                    "issue report",
+                    "problem report",
+                  ]
+              - sampleValue: "availability"
+                synonyms:
+                  ["stock", "in stock", "product availability", "out of stock"]
+              - sampleValue: "compatibility"
+                synonyms:
+                  [
+                    "compatible",
+                    "works with",
+                    "system requirements",
+                    "compatibility check",
+                  ]
+              - sampleValue: "installation"
+                synonyms: ["setup", "install", "installing", "setup process"]
+              - sampleValue: "uninstall"
+                synonyms: ["remove", "uninstalling", "delete app", "removal"]
+              - sampleValue: "update"
+                synonyms: ["upgrade", "software update", "new version", "patch"]
+              - sampleValue: "pricing"
+                synonyms: ["cost", "price", "how much", "pricing plans"]
+              - sampleValue: "trial period"
+                synonyms: ["free trial", "trial version", "demo", "test period"]
+              - sampleValue: "bulk order"
+                synonyms:
+                  [
+                    "wholesale",
+                    "large order",
+                    "quantity discount",
+                    "bulk purchase",
+                  ]
+              - sampleValue: "gift card"
+                synonyms:
+                  ["voucher", "gift certificate", "gift code", "prepaid card"]
+              - sampleValue: "loyalty program"
+                synonyms:
+                  ["rewards", "points", "rewards program", "loyalty points"]
+              - sampleValue: "referral"
+                synonyms:
+                  [
+                    "refer friend",
+                    "referral program",
+                    "invite",
+                    "referral code",
+                  ]

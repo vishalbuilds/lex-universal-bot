@@ -9,9 +9,9 @@ class CreateBotAlias(BotBase):
 
     def create_bot_alias(self):
         try:
-            response = self.lex_client.create_bot_alias(
-                botAliasName=self.alias_name,
+            response = self.LEX_CLIENT.create_bot_alias(
                 botId=self.bot_id,
+                botAliasName=self.alias_name,
                 description=self.description,
             )
             return response["botAliasId"]
@@ -38,10 +38,10 @@ class CreateBotAlias(BotBase):
                     }
                 )
 
-            response = self.lex_client.update_bot_alias(
+            response = self.LEX_CLIENT.update_bot_alias(
                 botAliasName=self.alias_name,
                 botId=self.bot_id,
-                botAliasId=bot_alias_id
+                botAliasId=bot_alias_id,
                 botAliasLocaleSettings=Alias_Locale_Settings,
             )
             return response

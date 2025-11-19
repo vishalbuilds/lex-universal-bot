@@ -2,56 +2,75 @@ from bot_engine.builder.bot_base import BotBase
 
 
 class CreatBotIntent(BotBase):
-    def __init__(
-        self,
-        intent_name,
-        locale_id,
-        bot_hook: list = None,
-    ):
-
-        self.intent_name = intent_name
+    def __init__(self, bot_version, locale_id, bot_id):
+        self.bot_version = bot_version
         self.locale_id = locale_id
-        self.bot_hook = bot_hook
+        self.bot_id = bot_id
 
     def create_bot_intent(
         self,
+        intent_name,
+        description,
         utterances: list[str],
-        slots: list[dict],  # [{'name':..., 'slotType':...}]
+        intent_hook: list,
     ):
         try:
-            # Slots mapping
-            slot_list = []
-            for s in slots:
-                slot_list.append(
-                    {
-                        "slotName": s["name"],
-                        "slotTypeId": s["slotType"],
-                        "valueElicitationSetting": {"slotConstraint": "Optional"},
-                    }
-                )
 
-            intent_definition = {
-                "intentName": self.intent_name,
-                "description": f"intent name: {self.intent_name} for bot_id: {self.bot_id} with locale_id: {self.locale_id}",
-                "sampleUtterances": [{"utterance": u} for u in utterances],
-            }
+            intent_definition = {}
 
-            if "fulfillmentCodeHook" in self.bot_hook or self.bot_hook == None:
+            if "fulfillmentCodeHook" in intent_hook:
                 intent_definition["fulfillmentCodeHook"] = {
                     "enabled": True,
                     "active": True,
                 }
 
-            if "intentConfirmationSetting" in self.bot_hook:
-                intent_definition["intentConfirmationSetting"] = {"enabled": True}
+            if "intentConfirmationSetting" in intent_hook:
+                intent_definition["intentConfirmationSetting"] = {
+                    "active": True,
+                    "promptSpecification": {
+                        "messageGroups": [
+                            {
+                                "message": {
+                                    "plainTextMessage": {"value": "Please confirm"}
+                                }
+                            }
+                        ],
+                        "maxRetries": 2,
+                    },
+                }
 
-            response = self.lex_client.create_intent(
-                botId=BotBase.BOT_NAME,
+            response = self.LEX_CLIENT.create_intent(
+                intentName=intent_name,
+                description=description,
+                botId=self.bot_id,
                 botVersion=self.bot_version,
+                sampleUtterances=[{"utterance": u} for u in utterances],
                 localeId=self.locale_id,
-                slots=slot_list,
                 **intent_definition,
             )
             return response["intentId"]
+        except Exception as e:
+            raise
+
+    def Create_slot_in_intent(
+        self,
+        slot_name,
+        slot_type_id,
+        intent_id,
+        slot_constraint="Optional",
+    ):
+        try:
+            response = self.LEX_CLIENT.create_slot(
+                botId=self.bot_id,
+                botVersion=self.bot_version,
+                localeId=self.locale_id,
+                intentId=intent_id,
+                slotName=slot_name,
+                slotTypeId=slot_type_id,
+                valueElicitationSetting={
+                    "slotConstraint": slot_constraint,
+                },
+            )
+            return response
         except Exception as e:
             raise

@@ -2,7 +2,7 @@ namespace(
     name="lex_v2_universal_bot",
     description="Universal Lex V2 chatbot for amazon connect",
     region="us-east-1",
-    roleArn="None",
+    roleArn="arn:aws:iam::842675979580:role/aws-service-role/lex.amazonaws.com/AWSServiceRoleForLexBots",
     dataPrivacy=namespace(childDirected=False),
     idleSessionTTLInSeconds=300,
     lambdaHooks=namespace(
@@ -19,7 +19,7 @@ namespace(
             intents=[
                 namespace(
                     name="LEX_CUSTOM_PHRASE_EN_US",
-                    fulfillmentCodeHook=True,
+                    codeHook="fulfillmentCodeHook",
                     description="A intent with custom phrases to fulfill all type of custom requests in english",
                     sampleUtterances=[
                         "I need help with {CUSTOM_PHRASE}.",
@@ -41,7 +41,7 @@ namespace(
                 ),
                 namespace(
                     name="LEX_REPEATED_PHRASE_EN_US",
-                    intentConfirmationSetting=True,
+                    codeHook=["intentConfirmationSetting"],
                     description="A intent with repeat phrases to fulfill all type of repeat requests in english",
                     sampleUtterances=[
                         "Repeat yourself.",
@@ -65,13 +65,14 @@ namespace(
             slotDefinitions=[
                 namespace(
                     name="LEX_PRODUCT_TYPE_EN_US",
+                    type="Custom",
                     description="Sample lex to capture product name",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
+                    slotConstraint="Optional",
                     slotType=namespace(
                         resolutionStrategy="TopResolution",
-                        values=[
+                        slotTypeValues=[
                             namespace(
-                                value="Laptop",
+                                sampleValue="Laptop",
                                 synonyms=[
                                     "notebook",
                                     "computer",
@@ -80,7 +81,7 @@ namespace(
                                 ],
                             ),
                             namespace(
-                                value="Smartphone",
+                                sampleValue="Smartphone",
                                 synonyms=[
                                     "mobile",
                                     "cell phone",
@@ -89,11 +90,11 @@ namespace(
                                 ],
                             ),
                             namespace(
-                                value="Tablet",
+                                sampleValue="Tablet",
                                 synonyms=["ipad", "android tablet", "tab"],
                             ),
                             namespace(
-                                value="Headphones",
+                                sampleValue="Headphones",
                                 synonyms=[
                                     "earphones",
                                     "earbuds",
@@ -102,11 +103,11 @@ namespace(
                                 ],
                             ),
                             namespace(
-                                value="Smartwatch",
+                                sampleValue="Smartwatch",
                                 synonyms=["fitness watch", "wearable", "digital watch"],
                             ),
                             namespace(
-                                value="Camera",
+                                sampleValue="Camera",
                                 synonyms=["dslr", "mirrorless", "digital camera"],
                             ),
                         ],
@@ -114,13 +115,14 @@ namespace(
                 ),
                 namespace(
                     name="LEX_YES_NO_EN_US",
+                    type="Custom",
                     description="Yes or No responses",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
+                    slotConstraint="Optional",
                     slotType=namespace(
                         resolutionStrategy="TopResolution",
-                        values=[
+                        slotTypeValues=[
                             namespace(
-                                value="Yes",
+                                sampleValue="Yes",
                                 synonyms=[
                                     "ya",
                                     "yeah",
@@ -136,7 +138,7 @@ namespace(
                                 ],
                             ),
                             namespace(
-                                value="No",
+                                sampleValue="No",
                                 synonyms=[
                                     "nope",
                                     "nah",
@@ -155,22 +157,23 @@ namespace(
                 ),
                 namespace(
                     name="LEX_CHANNEL_EN_US",
+                    type="Custom",
                     description="Communication channel type",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
+                    slotConstraint="Optional",
                     slotType=namespace(
                         resolutionStrategy="TopResolution",
-                        values=[
+                        slotTypeValues=[
                             namespace(
-                                value="SMS",
+                                sampleValue="SMS",
                                 synonyms=["text", "message", "short message service"],
                             ),
                             namespace(
-                                value="Call",
+                                sampleValue="Call",
                                 synonyms=["phone", "voice call", "telephone"],
                             ),
-                            namespace(value="Email", synonyms=["mail", "e-mail"]),
+                            namespace(sampleValue="Email", synonyms=["mail", "e-mail"]),
                             namespace(
-                                value="Chat",
+                                sampleValue="Chat",
                                 synonyms=["messenger", "live chat", "online chat"],
                             ),
                         ],
@@ -178,71 +181,70 @@ namespace(
                 ),
                 namespace(
                     name="LEX_DTMF_EN_US",
+                    type="Custom",
                     description="DTMF key pressed by the user",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
+                    slotConstraint="Optional",
                     slotType=namespace(
                         resolutionStrategy="TopResolution",
-                        values=[
-                            namespace(value="0", synonyms=["zero", "none"]),
-                            namespace(value="1", synonyms=["one", "first"]),
-                            namespace(value="2", synonyms=["two", "second"]),
-                            namespace(value="3", synonyms=["three", "third"]),
-                            namespace(value="4", synonyms=["four", "fourth"]),
-                            namespace(value="5", synonyms=["five", "fifth"]),
-                            namespace(value="6", synonyms=["six", "sixth"]),
-                            namespace(value="7", synonyms=["seven", "seventh"]),
-                            namespace(value="8", synonyms=["eight", "eighth"]),
-                            namespace(value="9", synonyms=["nine", "ninth"]),
+                        slotTypeValues=[
+                            namespace(sampleValue="0", synonyms=["zero", "none"]),
+                            namespace(sampleValue="1", synonyms=["one", "first"]),
+                            namespace(sampleValue="2", synonyms=["two", "second"]),
+                            namespace(sampleValue="3", synonyms=["three", "third"]),
+                            namespace(sampleValue="4", synonyms=["four", "fourth"]),
+                            namespace(sampleValue="5", synonyms=["five", "fifth"]),
+                            namespace(sampleValue="6", synonyms=["six", "sixth"]),
+                            namespace(sampleValue="7", synonyms=["seven", "seventh"]),
+                            namespace(sampleValue="8", synonyms=["eight", "eighth"]),
+                            namespace(sampleValue="9", synonyms=["nine", "ninth"]),
                         ],
                     ),
                 ),
                 namespace(
-                    name="LEX_CALLER_NAME_EN_US",
-                    description="Caller full name",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(resolutionStrategy="OriginalValue", values=[]),
-                ),
-                namespace(
                     name="LEX_FIRST_NAME_EN_US_Built-in",
-                    description="User's first name",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.FirstName"),
+                    type="BuiltIn",
+                    slotConstraint="Optional",
+                    slotTypeId="AMAZON.FirstName",
                 ),
                 namespace(
                     name="LEX_LAST_NAME_EN_US_Built-in",
-                    description="User's last name",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.LastName"),
+                    type="BuiltIn",
+                    slotConstraint="Optional",
+                    slotTypeId="AMAZON.LastName",
                 ),
                 namespace(
                     name="LEX_PHONE_NUMBER_EN_US_Built-in",
-                    description="User's phone number",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.PhoneNumber"),
+                    type="BuiltIn",
+                    slotConstraint="Optional",
+                    slotTypeId="AMAZON.PhoneNumber",
                 ),
                 namespace(
                     name="LEX_EMAIL_ADDRESS_EN_US_Built-in",
-                    description="User's email address",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.EmailAddress"),
+                    type="BuiltIn",
+                    slotConstraint="Optional",
+                    slotTypeId="AMAZON.EmailAddress",
                 ),
                 namespace(
                     name="LEX_NUMBER_EN_US_Built-in",
-                    description="Numeric value",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.Number"),
+                    type="BuiltIn",
+                    slotConstraint="Optional",
+                    slotTypeId="AMAZON.Number",
                 ),
                 namespace(
                     name="LEX_CITY_EN_US_Built-in",
-                    description="City name",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.City"),
+                    type="BuiltIn",
+                    slotConstraint="Optional",
+                    slotTypeId="AMAZON.City",
                 ),
                 namespace(
                     name="LEX_SPELLED_WORDS_EN_US_EXTENDED",
+                    type="Extended",
                     description="Alphanumeric input",
-                    valueElicitationSetting=namespace(slotConstraint="Optional"),
-                    slotType=namespace(builtIn="AMAZON.AlphaNumeric"),
+                    slotConstraint="Optional",
+                    slotType=namespace(
+                        parentSlotTypeSignature="AMAZON.AlphaNumeric",
+                        regexPattern="[A-Za-z]",
+                    ),
                 ),
             ],
         )

@@ -27,6 +27,8 @@ class CreateBuildBotLocale(BotBase):
         """
         try:
             response = self.LEX_CLIENT.create_bot_locale(
+                botId=self.bot_id,
+                localeId=self.locale_id,
                 description=f"bot_id: {self.bot_id}, locale_id: {self.locale_id}",
                 botVersion="DRAFT",
                 nluIntentConfidenceThreshold=nlu_intent_confidence_threshold,
