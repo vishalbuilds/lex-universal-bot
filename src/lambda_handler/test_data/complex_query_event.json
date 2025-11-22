@@ -1,0 +1,38 @@
+{
+  "messageVersion": "1.0",
+  "invocationSource": "DialogCodeHook",
+  "inputMode": "Text",
+  "responseContentType": "text/plain; charset=utf-8",
+  "sessionId": "555666777",
+  "inputTranscript": "I have multiple issues with billing and account access",
+  "bot": {
+    "id": "BOTID",
+    "name": "ExpertBot",
+    "aliasId": "ALIASID",
+    "aliasName": "Production",
+    "localeId": "en_US",
+    "version": "DRAFT"
+  },
+  "sessionState": {
+    "intent": {
+      "name": "MultipleIssues",
+      "slots": {
+        "issueType": {
+          "value": {
+            "originalValue": "billing and access",
+            "interpretedValue": "multiple",
+            "resolvedValues": ["billing", "access"]
+          }
+        }
+      },
+      "state": "InProgress",
+      "confirmationState": "None"
+    },
+    "sessionAttributes": {
+      "complexQuery": "true",
+      "userId": "user789",
+      "attemptCount": "2"
+    },
+    "originatingRequestId": "request-999"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "messageVersion": "1.0",
+  "invocationSource": "DialogCodeHook",
+  "inputMode": "Text",
+  "responseContentType": "text/plain; charset=utf-8",
+  "sessionId": "123456789",
+  "inputTranscript": "I need help with a complex technical issue",
+  "bot": {
+    "id": "BOTID",
+    "name": "ExpertBot",
+    "aliasId": "ALIASID",
+    "aliasName": "Production",
+    "localeId": "en_US",
+    "version": "DRAFT"
+  },
+  "sessionState": {
+    "intent": {
+      "name": "ComplexInquiry",
+      "slots": {
+        "topic": {
+          "value": {
+            "originalValue": "technical issue",
+            "interpretedValue": "technical issue",
+            "resolvedValues": ["technical issue"]
+          }
+        }
+      },
+      "state": "InProgress",
+      "confirmationState": "None"
+    },
+    "sessionAttributes": {
+      "needsExpert": "true",
+      "userId": "user123",
+      "conversationId": "conv-456"
+    },
+    "originatingRequestId": "request-789"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "messageVersion": "1.0",
+  "invocationSource": "DialogCodeHook",
+  "inputMode": "Text",
+  "responseContentType": "text/plain; charset=utf-8",
+  "sessionId": "987654321",
+  "inputTranscript": "What are your hours?",
+  "bot": {
+    "id": "BOTID",
+    "name": "ExpertBot",
+    "aliasId": "ALIASID",
+    "aliasName": "Production",
+    "localeId": "en_US",
+    "version": "DRAFT"
+  },
+  "sessionState": {
+    "intent": {
+      "name": "GetInformation",
+      "slots": {
+        "infoType": {
+          "value": {
+            "originalValue": "hours",
+            "interpretedValue": "hours",
+            "resolvedValues": ["hours"]
+          }
+        }
+      },
+      "state": "ReadyForFulfillment",
+      "confirmationState": "None"
+    },
+    "sessionAttributes": {
+      "userId": "user456"
+    },
+    "originatingRequestId": "request-321"
+  }
+}
